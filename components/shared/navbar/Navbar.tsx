@@ -8,7 +8,7 @@ import GlobalSearch from "../search/GlobalSearch";
 
 const Navbar = () => {
   return (
-    <nav className="flex-between background-light900_dark200 sm: fixed z-50 w-full gap-5 p-6 px-12 shadow-light-300 dark:shadow-none">
+    <nav className="flex-between background-light900_dark200 z-50 w-full gap-5 p-6 shadow-light-300  dark:shadow-none sm:fixed sm:px-12">
       <Link href="/" className="flex items-center gap-1">
         <Image
           src="/assets/images/site-logo.svg"
@@ -16,13 +16,13 @@ const Navbar = () => {
           height={23}
           alt="Devflow"
         />
-        <p className="h2-bold max-sm:hidden: font-spaceGrotesk text-dark-100 dark:text-light-900">
+        <p className="h2-bold font-spaceGrotesk text-dark-100 dark:text-light-900 max-sm:hidden">
           Dev <span className="text-primary-500">Overflow</span>
         </p>
       </Link>
-      <GlobalSearch/>
+      <GlobalSearch />
       <div className="flex-between gap-5">
-       <Theme/>
+        <Theme />
         <SignedIn>
           <UserButton
             appearance={{
@@ -35,7 +35,7 @@ const Navbar = () => {
             }}
           />
         </SignedIn>
-        <MobileNav/>
+        <MobileNav />
       </div>
     </nav>
   );
