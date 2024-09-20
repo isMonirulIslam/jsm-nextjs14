@@ -1,11 +1,12 @@
+/* eslint-disable camelcase */
 import { ClerkProvider } from "@clerk/nextjs";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Inter, Space_Grotesk  } from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
 import React from "react";
 import { ThemeProvider } from "../context/ThemeProvider";
 
-export const metadat: Metadata = {
+export const metadata: Metadata = {
   title: "Next.js 14 With Clerk",
   description: "A community-driven platform",
   icons: {
@@ -19,7 +20,7 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-const spaceGrotesk = Inter({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   variable: "--font-space-grotesk",
