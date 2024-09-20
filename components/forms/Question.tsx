@@ -97,8 +97,6 @@ const Question = ({ mongoUserId }: Props) => {
     form.setValue("tags", newTags);
   };
 
-  // console.log(mongoUserId);
-
   return (
     <Form {...form}>
       <form
