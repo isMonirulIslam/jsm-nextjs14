@@ -51,6 +51,6 @@ export const FormatAndDivideNumber = (num: number): string => {
     const formattedNum = (num / 1000).toFixed(1);
     return `${formattedNum}K`; // Correct string interpolation
   } else {
-    return num.toString(); // No formatting needed
+    return num?.toString(); // No formatting needed
   }
 };

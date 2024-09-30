@@ -29,6 +29,8 @@ interface Props {
 }
 
 const Question = ({ mongoUserId }: Props) => {
+  // const { mode } = useTheme();
+
   const editorRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -170,6 +172,8 @@ const Question = ({ mongoUserId }: Props) => {
                       "codesample | bold italic forecolor | alignleft aligncenter" +
                       "alignright alignjustify | bullist numlist",
                     content_style: "body { font-family:Inter; font-size:14px }",
+                    // skin: mode === "dark" ? "oxaide-dark" : "oxaide",
+                    // content_css: mode === "dark" ? "dark" : "light",
                   }}
                 />
               </FormControl>
