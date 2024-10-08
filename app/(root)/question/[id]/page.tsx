@@ -81,7 +81,7 @@ const Question = async ({ params, searchParams }) => {
           imgUrl="/assets/icons/eye.svg"
           alt="Views"
           value={FormatAndDivideNumber(result.views)}
-          title=" Answers"
+          title=" Views"
           textStyles="small-medium text dark400_light800"
         />
       </div>
