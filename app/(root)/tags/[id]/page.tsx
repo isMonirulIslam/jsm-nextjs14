@@ -8,7 +8,7 @@ import React from "react";
 
 const Tags = async ({ params, searchParams }: URLProps) => {
   const { id } = await params;
-  const { filter, page, q } = await searchParams;
+  const { page, q } = await searchParams;
   const result = await getQuestionsByTagId({
     tagId: id,
     page: page ? +page : 1,

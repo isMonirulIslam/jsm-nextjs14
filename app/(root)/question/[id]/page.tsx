@@ -16,7 +16,7 @@ import React from "react";
 const Question = async ({ params, searchParams }) => {
 
   const {id} = params;
-  const { filter, q, page } = await searchParams;
+  const { filter, page } = await searchParams;
 
   const { userId: clerkId } = await auth();
 
