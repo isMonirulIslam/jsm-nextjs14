@@ -13,7 +13,7 @@ const Community = async ({ searchParams }: SearchParamsProps) => {
 
   const result = await getAllUsers({
     searchQuery: q,
-    filter: filter,
+    filter,
     page: page ? +page : 1,
   });
 
