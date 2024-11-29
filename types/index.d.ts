@@ -32,7 +32,7 @@ export interface ParamsProps {
 }
 
 export interface SearchParamsProps {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: { [key: string]: string | undefined };
 }
 
 export interface URLProps {
