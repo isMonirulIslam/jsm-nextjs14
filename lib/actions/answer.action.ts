@@ -9,7 +9,6 @@ import {
   GetAnswersParams,
 } from "./shared.types";
 import Answer from "../database/answer.model";
-import { Inter } from "next/font/google";
 import Interaction from "../database/interaction.model";
 import User from "../database/user.model";
 

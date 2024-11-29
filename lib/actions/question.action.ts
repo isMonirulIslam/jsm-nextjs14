@@ -12,6 +12,7 @@ import {
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
+  RecommendedParams,
 } from "./shared.types";
 import Answer from "../database/answer.model";
 import Interaction from "../database/interaction.model";

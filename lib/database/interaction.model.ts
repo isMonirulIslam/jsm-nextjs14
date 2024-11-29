@@ -1,5 +1,4 @@
 import { Schema, model, models, Document } from "mongoose";
-import { string } from "zod";
 import User from "./user.model";
 import Question from "./question.model";
 import Answer from "./answer.model";
