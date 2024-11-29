@@ -2,15 +2,46 @@ import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilters from "@/components/home/HomeFilters";
 import Filter from "@/components/shared/Filter";
 import NoResult from "@/components/shared/NoResult";
+import Pagination from "@/components/shared/Pagination";
 import LocalSearchBar from "@/components/shared/search/LocalSearchbar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
-import { getQuestions } from "@/lib/actions/question.action";
+import {
+  getQuestions,
+  getRecommendedQuestions,
+} from "@/lib/actions/question.action";
+import { SearchParamsProps } from "@/types";
+import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 import React from "react";
 
-const Home = async () => {
-  const result = await getQuestions({});
+const Home = async ({ searchParams }: SearchParamsProps) => {
+  const { userId } = auth();
+
+  let result;
+
+  if (searchParams?.filter === "recommended") {
+    if (userId) {
+      result = await getRecommendedQuestions({
+        userId,
+        searchQuery: searchParams.q,
+        page: searchParams.page ? +searchParams.page : 1,
+      });
+    } else {
+      result = {
+        questions: [],
+        isNext: false,
+      };
+    }
+  } else {
+    result = await getQuestions({
+      searchQuery: searchParams.q,
+      filter: searchParams.filter,
+      page: searchParams.page ? +searchParams.page : 1,
+    });
+  }
+
+  // Fetch Recomendation
 
   return (
     <>
@@ -36,6 +67,7 @@ const Home = async () => {
           containerClasses="hidden max-md:flex"
         />
       </div>
+
       <HomeFilters />
 
       <div className="mt-10 flex w-full flex-col gap-6">
@@ -64,6 +96,12 @@ const Home = async () => {
             linkTitle="Ask a Question"
           />
         )}
+      </div>
+      <div className="mt-10">
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={result.isNext}
+        />
       </div>
     </>
   );
