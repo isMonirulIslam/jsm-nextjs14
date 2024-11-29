@@ -4,7 +4,6 @@ import Metric from "@/components/shared/Metric";
 import ParseHtml from "@/components/shared/ParseHtml";
 import RenderTag from "@/components/shared/RenderTag";
 import Votes from "@/components/shared/Votes";
-import { getAnswers } from "@/lib/actions/answer.action";
 import { getQuestionById } from "@/lib/actions/question.action";
 // import { getQuestionById } from "@/lib/actions/question.action";
 import { getUserById } from "@/lib/actions/user.action";
@@ -15,7 +14,7 @@ import Link from "next/link";
 import React from "react";
 
 const Question = async ({ params, searchParams }) => {
-  const { userId: clerkId } = auth();
+  const { userId: clerkId } = await auth();
 
   let mongoUser;
 
@@ -47,12 +46,12 @@ const Question = async ({ params, searchParams }) => {
           <div className="flex justify-end">
             <Votes
               type="Question"
-              itemId={JSON.stringify(result._id)}
-              userId={JSON.stringify(mongoUser._id)}
+              itemId={JSON.stringify(result?._id)}
+              userId={JSON.stringify(mongoUser?._id)}
               upvotes={result.upvotes.length}
-              hasUpvoted={result.upvotes.includes(mongoUser._id)}
+              hasUpvoted={result.upvotes.includes(mongoUser?._id)}
               downvotes={result.downvotes.length}
-              hasDownvoted={result.downvotes.includes(mongoUser._id)}
+              hasDownvoted={result.downvotes.includes(mongoUser?._id)}
               hasSaved={mongoUser?.saved?.includes(result._id)}
             />
           </div>
@@ -98,15 +97,17 @@ const Question = async ({ params, searchParams }) => {
       </div>
 
       <AllAnswers
-        questionId={result._id}
-        userId={mongoUser._id}
+        questionId={result?._id}
+        userId={mongoUser?._id}
         totalAnswers={result.answers.length}
+        page={searchParams?.page}
+        filter={searchParams?.filter}
       />
 
       <Answer
         question={result.content}
-        questionId={JSON.stringify(result._id)}
-        authorId={JSON.stringify(mongoUser._id)}
+        questionId={JSON.stringify(result?._id)}
+        authorId={JSON.stringify(mongoUser?._id)}
       />
     </>
   );

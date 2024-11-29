@@ -14,9 +14,9 @@ import Link from "next/link";
 import React from "react";
 
 const Profile = async ({ params, searchParams }: URLProps) => {
-  const { userId: clerkId } = auth();
+  const { userId: clerkId } = await auth();
   const userInfo = await getUserInfo({ userId: params.id });
-  
+
   return (
     <>
       <div className="flex flex-col-reverse items-start justify-between sm:flex-row">
@@ -75,6 +75,8 @@ const Profile = async ({ params, searchParams }: URLProps) => {
       <Stats
         totalQuestions={userInfo.totalQuestions}
         totalAnswers={userInfo.totalAnswers}
+        badgeCounts={userInfo.badgeCounts}
+        reputation={userInfo.reputation}
       />
       <div className="mt-10 flex gap-10">
         <Tabs defaultValue="top-posts" className="w-[400px]">
@@ -86,7 +88,10 @@ const Profile = async ({ params, searchParams }: URLProps) => {
               Answers
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="top-posts">
+          <TabsContent
+            value="top-posts"
+            className="mt-5 flex w-full flex-col gap-6"
+          >
             <QuestionTab
               searchParams={searchParams}
               userId={userInfo.user._id}

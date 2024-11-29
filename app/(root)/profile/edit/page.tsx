@@ -5,7 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import React from "react";
 
 const Edit = async ({ params }: ParamsProps) => {
-  const { userId } = auth();
+  const { userId } = await auth();
   if (!userId) return null;
   const mongoUser = await getUserById({ userId });
 //   const result = await getQuestionById({ questionId: params.id });
