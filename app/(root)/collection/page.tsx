@@ -12,11 +12,13 @@ import React from "react";
 const Collection = async ({ searchParams }: SearchParamsProps) => {
   const { userId } = await auth();
 
+  const { filter, q, page } = await searchParams;
+
   if (!userId) return null;
   const result = await getSavedQuestions({
     clerkId: userId,
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
+    searchQuery: q,
+    filter,
   });
 
   return (
@@ -66,7 +68,7 @@ const Collection = async ({ searchParams }: SearchParamsProps) => {
       </div>
       <div className="mt-10">
         <Pagination
-          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          pageNumber={page ? +page : 1}
           isNext={result.isNext}
         />
       </div>

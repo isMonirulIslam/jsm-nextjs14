@@ -14,8 +14,12 @@ import Link from "next/link";
 import React from "react";
 
 const Profile = async ({ params, searchParams }: URLProps) => {
+  const { id } = await params;
+
+  const { filter, q, page } = await searchParams;
+
   const { userId: clerkId } = await auth();
-  const userInfo = await getUserInfo({ userId: params.id });
+  const userInfo = await getUserInfo({ userId: id });
 
   return (
     <>

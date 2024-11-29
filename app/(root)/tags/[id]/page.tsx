@@ -7,10 +7,12 @@ import { URLProps } from "@/types";
 import React from "react";
 
 const Tags = async ({ params, searchParams }: URLProps) => {
+  const { id } = await params;
+  const { filter, page, q } = await searchParams;
   const result = await getQuestionsByTagId({
-    tagId: params.id,
-    page: searchParams?.page ? +searchParams.page : 1,
-    searchQuery: searchParams.q,
+    tagId: id,
+    page: page ? +page : 1,
+    searchQuery: q,
   });
   return (
     <>
@@ -18,7 +20,7 @@ const Tags = async ({ params, searchParams }: URLProps) => {
 
       <div className="mt-11 w-full">
         <LocalSearchBar
-          route={`/tags/${params.id}`}
+          route={`/tags/${id}`}
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
           placeholder="Search tag questions"
@@ -54,10 +56,7 @@ const Tags = async ({ params, searchParams }: URLProps) => {
         )}
       </div>
       <div className="mt-10">
-        <Pagination
-          pageNumber={searchParams?.page ? +searchParams.page : 1}
-          isNext={result.isNext}
-        />
+        <Pagination pageNumber={page ? +page : 1} isNext={result.isNext} />
       </div>
     </>
   );
