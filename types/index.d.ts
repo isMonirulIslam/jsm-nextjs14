@@ -1,4 +1,3 @@
-
 import { BADGE_CRITERIA } from "@/constants";
 
 export interface SidebarLink {
@@ -32,7 +31,8 @@ export interface ParamsProps {
 }
 
 export interface SearchParamsProps {
-  searchParams: { [key: string]: string | undefined };
+  // searchParams: { [key: string]: string | undefined };
+  searchParams: Promise<SegmentParams>;
 }
 
 export interface URLProps {
