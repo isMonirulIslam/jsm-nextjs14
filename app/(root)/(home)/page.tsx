@@ -16,9 +16,9 @@ import Link from "next/link";
 import React from "react";
 
 const Home = async ({ searchParams }: SearchParamsProps) => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
-  let result;
+  let result: any;
 
   if (searchParams?.filter === "recommended") {
     if (userId) {
