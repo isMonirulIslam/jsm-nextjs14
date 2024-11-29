@@ -16,9 +16,10 @@ import Link from "next/link";
 import React from "react";
 
 const Home = async ({ searchParams }: SearchParamsProps) => {
+
   const { userId } = await auth();
 
-  const { filter, q, page } = searchParams;
+  const { filter, q, page } = await searchParams;
 
   let result: any;
 
@@ -101,7 +102,7 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
       </div>
       <div className="mt-10">
         <Pagination
-          pageNumber={searchParams?.page ? +page : 1}
+          pageNumber={page ? +page : 1}
           isNext={result.isNext}
         />
       </div>
