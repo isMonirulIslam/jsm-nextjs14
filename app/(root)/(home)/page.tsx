@@ -18,14 +18,16 @@ import React from "react";
 const Home = async ({ searchParams }: SearchParamsProps) => {
   const { userId } = await auth();
 
+  const { filter, q, page } = searchParams;
+
   let result: any;
 
-  if (searchParams?.filter === "recommended") {
+  if (filter === "recommended") {
     if (userId) {
       result = await getRecommendedQuestions({
         userId,
-        searchQuery: searchParams.q,
-        page: searchParams.page ? +searchParams.page : 1,
+        searchQuery: q,
+        page: page ? +page : 1,
       });
     } else {
       result = {
@@ -35,9 +37,9 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
     }
   } else {
     result = await getQuestions({
-      searchQuery: searchParams.q,
-      filter: searchParams.filter,
-      page: searchParams.page ? +searchParams.page : 1,
+      searchQuery: q,
+      filter,
+      page: page ? +page : 1,
     });
   }
 
@@ -99,7 +101,7 @@ const Home = async ({ searchParams }: SearchParamsProps) => {
       </div>
       <div className="mt-10">
         <Pagination
-          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          pageNumber={searchParams?.page ? +page : 1}
           isNext={result.isNext}
         />
       </div>
