@@ -14,6 +14,10 @@ import Link from "next/link";
 import React from "react";
 
 const Question = async ({ params, searchParams }: URLProps) => {
+
+  const {id} = params;
+  const { filter, page } = await searchParams;
+
   const { userId: clerkId } = await auth();
 
   let mongoUser;
@@ -22,7 +26,7 @@ const Question = async ({ params, searchParams }: URLProps) => {
     mongoUser = await getUserById({ userId: clerkId });
   }
 
-  const result = await getQuestionById({ questionId: params.id });
+  const result = await getQuestionById({ questionId: id });
 
   return (
     <>
@@ -102,8 +106,8 @@ const Question = async ({ params, searchParams }: URLProps) => {
         questionId={result?._id}
         userId={mongoUser?._id}
         totalAnswers={result.answers.length}
-        page={+searchParams?.page}
-        filter={searchParams?.filter}
+        page={+page}
+        filter={filter}
       />
 
       <Answer

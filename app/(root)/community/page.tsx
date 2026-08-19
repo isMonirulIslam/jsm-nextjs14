@@ -8,10 +8,13 @@ import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 
 const Community = async ({ searchParams }: SearchParamsProps) => {
+
+  const { filter, q, page } = await searchParams;
+
   const result = await getAllUsers({
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page: searchParams?.page ? +searchParams.page : 1,
+    searchQuery: q,
+    filter,
+    page: page ? +page : 1,
   });
 
   return (
@@ -56,7 +59,7 @@ const Community = async ({ searchParams }: SearchParamsProps) => {
       </section>
       <div className="mt-10">
         <Pagination
-          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          pageNumber={page ? +page : 1}
           isNext={result.isNext}
         />
       </div>
