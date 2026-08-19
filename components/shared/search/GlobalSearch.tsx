@@ -10,32 +10,39 @@ const GlobalSearch = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const searchContainerRef = useRef(null);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
 
   const query = searchParams.get("q");
 
   const [search, setSearch] = useState(query || "");
   const [isOpen, setIsOpen] = useState(false);
 
+  // Close the search on navigation (adjusting state during render, per
+  // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes).
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setIsOpen(false);
+    setSearch("");
+  }
+
   useEffect(() => {
-    const handleOutsideClick = (event: any) => {
+    const handleOutsideClick = (event: MouseEvent) => {
       if (
         searchContainerRef.current &&
-        !searchContainerRef.current.contains(event.target)
+        !searchContainerRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
         setSearch("");
       }
     };
 
-    setIsOpen(false);
-
     document.addEventListener("click", handleOutsideClick);
 
     return () => {
       document.removeEventListener("click", handleOutsideClick);
     };
-  }, [pathname]);
+  }, []);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {

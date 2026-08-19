@@ -23,10 +23,14 @@ interface Props {
   authorId: string;
 }
 
+interface TinyMCEEditorInstance {
+  setContent: (content: string) => void;
+}
+
 const Answer = ({ question, questionId, authorId }: Props) => {
   //   const { mode } = useTheme();
   const pathname = usePathname();
-  const editorRef = useRef(null);
+  const editorRef = useRef<TinyMCEEditorInstance | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmittingAI, setIsSubmittingAI] = useState(false);
 
@@ -49,8 +53,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
 
       form.reset();
       if (editorRef.current) {
-        const editor = editorRef.current as any;
-        editor.setContent("");
+        editorRef.current.setContent("");
       }
     } catch (error) {
       console.log(error);
@@ -75,8 +78,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
       const aiAnswer = await response.json();
       const formattedAnswer = aiAnswer.answer.replace(/\n/g, "<br />");
       if (editorRef.current) {
-        const editor = editorRef.current as any;
-        editor.setContent(formattedAnswer);
+        editorRef.current.setContent(formattedAnswer);
       }
       // await handleCreateAnswer({ answer: aiAnswer.answer });
     } catch (error) {
@@ -115,7 +117,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
       <Form {...form}>
         <form
           className="mt-6 flex w-full flex-col gap-10"
-          onSubmit={form.handleSubmit(handleCreateAnswer)}
+          onSubmit={(e) => form.handleSubmit(handleCreateAnswer)(e)}
         >
           <FormField
             control={form.control}

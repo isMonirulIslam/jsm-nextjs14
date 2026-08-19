@@ -1,5 +1,6 @@
 "use server";
 
+import { Model } from "mongoose";
 import Answer from "../database/answer.model";
 import Question from "../database/question.model";
 import Tag from "../database/tag.model";
@@ -15,11 +16,31 @@ export const globalSearch = async (params: SearchParams) => {
     const { type, query } = params;
     const regexQuery = { $regex: query, $options: "i" };
     let results = [];
-    const modelsAndTypes = [
-      { model: Question, searchField: "title", type: "question" },
-      { model: User, searchField: "name", type: "user" },
-      { model: Answer, searchField: "content", type: "answer" },
-      { model: Tag, searchField: "name", type: "tag" },
+    const modelsAndTypes: {
+      model: Model<Record<string, unknown>>;
+      searchField: string;
+      type: string;
+    }[] = [
+      {
+        model: Question as unknown as Model<Record<string, unknown>>,
+        searchField: "title",
+        type: "question",
+      },
+      {
+        model: User as unknown as Model<Record<string, unknown>>,
+        searchField: "name",
+        type: "user",
+      },
+      {
+        model: Answer as unknown as Model<Record<string, unknown>>,
+        searchField: "content",
+        type: "answer",
+      },
+      {
+        model: Tag as unknown as Model<Record<string, unknown>>,
+        searchField: "name",
+        type: "tag",
+      },
     ];
     const typeLowerCase = type?.toLowerCase();
     if (!typeLowerCase || !searchableTypes.includes(typeLowerCase)) {

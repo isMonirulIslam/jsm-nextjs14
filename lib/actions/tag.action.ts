@@ -9,6 +9,7 @@ import {
   GetQuestionsByTagIdParams,
   GetTopInteractedTagsParams,
 } from "./shared.types";
+import type { PopulatedQuestion } from "./question.action";
 
 export const getTopInteractedTags = async (
   params: GetTopInteractedTagsParams
@@ -93,7 +94,7 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
 
     const tagFilter: FilterQuery<ITag> = { _id: tagId };
 
-    const tag = await Tag.findOne(tagFilter).populate({
+    const tag = (await Tag.findOne(tagFilter).populate({
       path: "questions",
       model: Question,
       match: searchQuery
@@ -108,7 +109,9 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
         { path: "tags", model: Tag, select: "_id name" },
         { path: "author", model: User, select: "_id clerkId name picture" },
       ],
-    });
+    })) as unknown as
+      | (Omit<ITag, "questions"> & { questions: PopulatedQuestion[] })
+      | null;
 
     if (!tag) {
       throw new Error("Tag not found");

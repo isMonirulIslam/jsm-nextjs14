@@ -17,7 +17,7 @@ import React from "react";
 
 const Home = async ({ searchParams }: SearchParamsProps) => {
 
-  const { userId } = await auth();
+  const { userId } = await await auth();
 
   const { filter, q, page } = await searchParams;
 
