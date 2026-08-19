@@ -5,15 +5,15 @@ import ParseHtml from "@/components/shared/ParseHtml";
 import RenderTag from "@/components/shared/RenderTag";
 import Votes from "@/components/shared/Votes";
 import { getQuestionById } from "@/lib/actions/question.action";
-// import { getQuestionById } from "@/lib/actions/question.action";
 import { getUserById } from "@/lib/actions/user.action";
 import { FormatAndDivideNumber, getTimestamp } from "@/lib/utils";
+import { URLProps } from "@/types";
 import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-const Question = async ({ params, searchParams }) => {
+const Question = async ({ params, searchParams }: URLProps) => {
   const { userId: clerkId } = await auth();
 
   let mongoUser;
@@ -52,7 +52,9 @@ const Question = async ({ params, searchParams }) => {
               hasUpvoted={result.upvotes.includes(mongoUser?._id)}
               downvotes={result.downvotes.length}
               hasDownvoted={result.downvotes.includes(mongoUser?._id)}
-              hasSaved={mongoUser?.saved?.includes(result._id)}
+              hasSaved={mongoUser?.saved?.some(
+                (savedId) => String(savedId) === result._id
+              )}
             />
           </div>
         </div>
@@ -86,7 +88,7 @@ const Question = async ({ params, searchParams }) => {
       </div>
       <ParseHtml data={result.content} />
       <div className="mt-8 flex flex-wrap gap-2">
-        {result.tags.map((tag: any) => (
+        {result.tags.map((tag: { _id: string; name: string }) => (
           <RenderTag
             key={tag._id}
             _id={tag._id}
@@ -100,7 +102,7 @@ const Question = async ({ params, searchParams }) => {
         questionId={result?._id}
         userId={mongoUser?._id}
         totalAnswers={result.answers.length}
-        page={searchParams?.page}
+        page={+searchParams?.page}
         filter={searchParams?.filter}
       />
 

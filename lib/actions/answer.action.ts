@@ -8,10 +8,13 @@ import {
   CreateAnswerParams,
   GetAnswersParams,
 } from "./shared.types";
-import Answer from "../database/answer.model";
-import { Inter } from "next/font/google";
+import Answer, { IAnswer } from "../database/answer.model";
 import Interaction from "../database/interaction.model";
-import User from "../database/user.model";
+import User, { IUser } from "../database/user.model";
+
+type PopulatedAnswer = Omit<IAnswer, "author"> & {
+  author: Pick<IUser, "_id" | "clerkId" | "name" | "picture">;
+};
 
 export const createAnswer = async (params: CreateAnswerParams) => {
   try {
@@ -72,11 +75,11 @@ export const getAnswers = async (params: GetAnswersParams) => {
         break;
     }
 
-    const answers = await Answer.find({ questionId })
+    const answers = (await Answer.find({ questionId })
       .populate("author", "_id clerkId name picture")
       .sort(sortOptions)
       .skip(skipAmount)
-      .limit(pageSize);
+      .limit(pageSize)) as unknown as PopulatedAnswer[];
     const totalAnswers = await Answer.countDocuments({ questionId });
     const isNextAnswers = totalAnswers > skipAmount + answers.length;
     return { answers, isNextAnswers };

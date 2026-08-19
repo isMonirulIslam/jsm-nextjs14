@@ -33,7 +33,18 @@ const Community = async ({ searchParams }: SearchParamsProps) => {
 
       <section className="mt-12 flex flex-wrap gap-4">
         {result.users.length > 0 ? (
-          result.users.map((user) => <UserCard key={user._id} user={user} />)
+          result.users.map((user) => (
+            <UserCard
+              key={String(user._id)}
+              user={{
+                _id: String(user._id),
+                clerkId: user.clerkId,
+                name: user.name,
+                picture: user.picture,
+                username: user.username,
+              }}
+            />
+          ))
         ) : (
           <div className="paragraph-regular text-dark200_light800 mx-auto max-w-4xl text-center">
             <p>No users yet</p>

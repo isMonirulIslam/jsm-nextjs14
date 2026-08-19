@@ -1,5 +1,4 @@
-import { Schema, model, models, Document } from "mongoose";
-import { string } from "zod";
+import { Schema, model, models, Document, Model } from "mongoose";
 import User from "./user.model";
 import Question from "./question.model";
 import Answer from "./answer.model";
@@ -23,7 +22,8 @@ const InteractionSchema = new Schema({
   createAt: { type: Date, default: Date.now },
 });
 
-const Interaction =
-  models.Interaction || model("Interaction", InteractionSchema);
+const Interaction: Model<IInteraction> =
+  (models.Interaction as Model<IInteraction>) ||
+  model<IInteraction>("Interaction", InteractionSchema);
 
 export default Interaction;

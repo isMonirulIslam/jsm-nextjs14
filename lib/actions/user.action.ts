@@ -16,11 +16,18 @@ import {
 } from "./shared.types";
 import Question from "../database/question.model";
 import Tag from "../database/tag.model";
-import Answer from "../database/answer.model";
+import Answer, { IAnswer } from "../database/answer.model";
 import { BadgeCriteriaType } from "@/types";
 import { assignBadges } from "../utils";
+import type { PopulatedQuestion } from "./question.action";
 
-export async function getUserById(params: any) {
+type PopulatedAnswer = Omit<IAnswer, "question" | "author" | "_id"> & {
+  _id: string;
+  question: { _id: string; title: string };
+  author: { _id: string; clerkId: string; name: string; picture: string };
+};
+
+export async function getUserById(params: { userId: string }) {
   try {
     connectToDatabase();
 
@@ -145,7 +152,9 @@ export const ToggleSaveQuestion = async (params: ToggleSaveQuestionParams) => {
       throw new Error("User not found");
     }
 
-    const isQuestionSaved = user.saved.includes(questionId);
+    const isQuestionSaved = user.saved.some(
+      (savedQuestionId) => savedQuestionId.toString() === questionId
+    );
 
     if (isQuestionSaved) {
       // Remove question from saved
@@ -201,7 +210,7 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
         break;
     }
 
-    const user = await User.findOne({ clerkId }).populate({
+    const user = (await User.findOne({ clerkId }).populate({
       path: "saved",
       match: query,
       options: {
@@ -213,12 +222,13 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
         { path: "tags", model: Tag, select: "_id name" },
         { path: "author", model: User, select: "_id clerkId name picutre" },
       ],
-    });
-    const isNext = user.saved.length > pageSize;
+    })) as unknown as { saved: PopulatedQuestion[] } | null;
 
     if (!user) {
       throw new Error("User not found");
     }
+
+    const isNext = user.saved.length > pageSize;
     const savedQuestions = user.saved;
     return { questions: savedQuestions, isNext };
   } catch (error) {
@@ -309,7 +319,7 @@ export const getUserQuestions = async (params: GetUserStatsParams) => {
     const { userId, page = 1, pageSize = 2 } = params;
     const skipAmount = (page - 1) * pageSize;
     const totalQuestions = await Question.countDocuments({ author: userId });
-    const userQuestions = await Question.find({ author: userId })
+    const userQuestions = (await Question.find({ author: userId })
       .sort({
         createdAt: -1,
         views: -1,
@@ -318,7 +328,7 @@ export const getUserQuestions = async (params: GetUserStatsParams) => {
       .skip(skipAmount)
       .limit(pageSize)
       .populate("tags", "_id name")
-      .populate("author", "_id clerkId name picture");
+      .populate("author", "_id clerkId name picture")) as unknown as PopulatedQuestion[];
     const isNextQuestions = totalQuestions > skipAmount + userQuestions.length;
     return { totalQuestions, questions: userQuestions, isNextQuestions };
   } catch (error) {
@@ -332,14 +342,14 @@ export const getUserAnswers = async (params: GetUserStatsParams) => {
     const { userId, page = 1, pageSize = 2 } = params;
     const skipAmount = (page - 1) * pageSize;
     const totalAnswers = await Answer.countDocuments({ author: userId });
-    const userAnswers = await Answer.find({ author: userId })
+    const userAnswers = (await Answer.find({ author: userId })
       .sort({
         upvotes: -1,
       })
       .skip(skipAmount)
       .limit(pageSize)
       .populate("question", "_id title")
-      .populate("author", "_id clerkId name picture");
+      .populate("author", "_id clerkId name picture")) as unknown as PopulatedAnswer[];
 
     const isNextAnswers = totalAnswers > skipAmount + userAnswers.length;
     return { totalAnswers, answers: userAnswers, isNextAnswers };

@@ -36,10 +36,10 @@ const Profile = async ({ params, searchParams }: URLProps) => {
               @{userInfo.user.username}
             </p>
             <div className="mt-5 flex flex-wrap items-center justify-start gap-5">
-              {userInfo.user.portlOlioWebsite && (
+              {userInfo.user.portfolioWebsite && (
                 <ProfileLink
                   imgUrl="/assets/icons/link.svg"
-                  title={userInfo.user.portlOlioWebsite}
+                  title={userInfo.user.portfolioWebsite}
                 />
               )}
               {userInfo.user.location && (
@@ -94,14 +94,14 @@ const Profile = async ({ params, searchParams }: URLProps) => {
           >
             <QuestionTab
               searchParams={searchParams}
-              userId={userInfo.user._id}
+              userId={String(userInfo.user._id)}
               clerkId={clerkId}
             />
           </TabsContent>
           <TabsContent value="answers" className="flex w-full flex-col gap-6">
             <AnswerTab
               searchParams={searchParams}
-              userId={userInfo.user._id}
+              userId={String(userInfo.user._id)}
               clerkId={clerkId}
             />
           </TabsContent>

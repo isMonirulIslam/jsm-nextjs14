@@ -1,4 +1,4 @@
-import { Schema, models, model, Document } from "mongoose";
+import { Schema, models, model, Document, Model } from "mongoose";
 
 // Define the IUser interface based on the Document from Mongoose
 export interface IUser extends Document {
@@ -32,6 +32,7 @@ const UserSchema = new Schema({
   joinedAt: { type: Date, default: Date.now },
 });
 
-const User = models.User || model("User", UserSchema);
+const User: Model<IUser> =
+  (models.User as Model<IUser>) || model<IUser>("User", UserSchema);
 
 export default User;

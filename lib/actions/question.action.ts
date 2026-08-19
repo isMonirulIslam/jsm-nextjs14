@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import Question from "../database/question.model";
+import Question, { IQuestion } from "../database/question.model";
 import Tag from "../database/tag.model";
 import User from "../database/user.model";
 import { connectToDatabase } from "../mongoose";
@@ -12,10 +12,17 @@ import {
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
+  RecommendedParams,
 } from "./shared.types";
 import Answer from "../database/answer.model";
 import Interaction from "../database/interaction.model";
 import { FilterQuery } from "mongoose";
+
+export type PopulatedQuestion = Omit<IQuestion, "tags" | "author" | "_id"> & {
+  _id: string;
+  tags: { _id: string; name: string }[];
+  author: { _id: string; clerkId: string; name: string; picture: string };
+};
 
 export const getQuestions = async (params: GetQuestionsParams) => {
   try {
@@ -52,7 +59,7 @@ export const getQuestions = async (params: GetQuestionsParams) => {
         break;
     }
 
-    const questions = await Question.find(query)
+    const questions = (await Question.find(query)
       .populate({
         path: "tags",
         model: Tag,
@@ -63,7 +70,7 @@ export const getQuestions = async (params: GetQuestionsParams) => {
       })
       .skip(skipAmount)
       .limit(pageSize)
-      .sort(sortOptions);
+      .sort(sortOptions)) as unknown as PopulatedQuestion[];
     const totalQuestions = await Question.countDocuments(query);
     const isNext = totalQuestions > skipAmount + questions.length;
     return { questions, isNext };
@@ -73,7 +80,15 @@ export const getQuestions = async (params: GetQuestionsParams) => {
   }
 };
 
-export const createQuestion = async (params: any) => {
+interface CreateQuestionParams {
+  title: string;
+  explanation: string;
+  tags: string[];
+  author: string;
+  path: string;
+}
+
+export const createQuestion = async (params: CreateQuestionParams) => {
   try {
     connectToDatabase();
 
@@ -124,13 +139,13 @@ export const getQuestionById = async (params: GetQuestionByIdParams) => {
     connectToDatabase();
 
     const { questionId } = params;
-    const question = await Question.findById(questionId)
+    const question = (await Question.findById(questionId)
       .populate({ path: "tags", model: Tag, select: "_id name" })
       .populate({
         path: "author",
         model: User,
         select: "_id clerkId name picture",
-      });
+      })) as unknown as PopulatedQuestion;
     return question;
   } catch (error) {
     console.log(error);
@@ -328,8 +343,8 @@ export async function getRecommendedQuestions(params: RecommendedParams) {
 
     // Get distinct tag IDs from user's interactions
     const distinctUserTagIds = [
-      // @ts-ignore
-      ...new Set(userTags.map((tag: any) => tag._id)),
+      // @ts-expect-error - downlevelIteration is not enabled for Set spreading
+      ...new Set(userTags.map((tag: { _id: string }) => tag._id)),
     ];
 
     const query: FilterQuery<typeof Question> = {
@@ -348,7 +363,7 @@ export async function getRecommendedQuestions(params: RecommendedParams) {
 
     const totalQuestions = await Question.countDocuments(query);
 
-    const recommendedQuestions = await Question.find(query)
+    const recommendedQuestions = (await Question.find(query)
       .populate({
         path: "tags",
         model: Tag,
@@ -358,7 +373,7 @@ export async function getRecommendedQuestions(params: RecommendedParams) {
         model: User,
       })
       .skip(skipAmount)
-      .limit(pageSize);
+      .limit(pageSize)) as unknown as PopulatedQuestion[];
 
     const isNext = totalQuestions > skipAmount + recommendedQuestions.length;
 

@@ -20,7 +20,7 @@ interface QuestionProps {
     name: string;
     picture: string;
   };
-  upvotes: string[];
+  upvotes: unknown[];
   answers: Array<object>;
   views: number;
   createdAt: Date;

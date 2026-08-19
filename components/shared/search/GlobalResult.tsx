@@ -24,7 +24,7 @@ const GlobalResult = () => {
       try {
         const result = await globalSearch({ type, query: global });
         setResult(JSON.parse(result));
-      } catch (error) {
+      } catch {
       } finally {
         setIsLoading(false);
       }
@@ -80,7 +80,7 @@ const GlobalResult = () => {
         ) : (
           <div className="flex flex-col gap-2">
             {result.length > 0 ? (
-              result.map((item: any, index: number) => (
+              result.map((item, index) => (
                 <Link
                   key={item.type + item.id + index}
                   href={renderLink(item.type, item.id)}

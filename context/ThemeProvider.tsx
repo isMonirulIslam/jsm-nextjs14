@@ -23,8 +23,10 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
+    // Reads localStorage/matchMedia, which aren't available during render/SSR.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     handleThemeChange();
-  }, [mode]);
+  }, []);
 
   return (
     <ThemeContext.Provider value={{ mode, setMode }}>
